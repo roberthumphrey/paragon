@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "test": "node ."
+    "test": "node src/Test/index.js"
   },
   "author": "Robert Humphrey",
   "license": "MIT",

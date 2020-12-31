@@ -1,0 +1,27 @@
+{
+  "name": "paragon-anima",
+  "version": "1.0.0",
+  "description": "Automation System designed and developed for Auzric",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
+  "author": "Robert Humphrey",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.21.0",
+    "diff": "^4.0.2",
+    "discord.js": "^12.4.0",
+    "dotenv": "^8.2.0",
+    "glob": "^7.1.6",
+    "hastebin": "^0.2.1",
+    "moment": "^2.29.0",
+    "mongoose": "^5.10.11",
+    "ms": "^2.1.2",
+    "node-fetch": "^2.6.1",
+    "node-http-ping": "^0.3.1",
+    "os": "^0.1.1"
+  }
+}

@@ -10,7 +10,7 @@ module.exports = {
         name: process.env.DB
     },
     owners: [
-        "112329563849117696" // adapt#0001
+        "112329563849117696"
     ],
     api: {
         uri: process.env.URI,

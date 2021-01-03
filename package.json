@@ -13,11 +13,13 @@
   "private": true,
   "dependencies": {
     "axios": "^0.21.0",
+    "canvas": "^2.6.1",
     "diff": "^4.0.2",
     "discord.js": "^12.4.0",
     "dotenv": "^8.2.0",
     "glob": "^7.1.6",
     "hastebin": "^0.2.1",
+    "join": "^3.0.0",
     "moment": "^2.29.0",
     "mongoose": "^5.10.11",
     "ms": "^2.1.2",

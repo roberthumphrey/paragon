@@ -31,7 +31,7 @@ module.exports = class extends Command {
                     .setColor('BLUE')
                     .setTitle('Verified Paragon Anima Users')
                     .addField('Hastebin URL', `${url}`)
-                    .setFooter('Will be updated in future update - Robert')
+                    .setFooter('Will be made better in future update - Robert')
 
                 message.channel.send(embed);
             });

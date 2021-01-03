@@ -5,6 +5,7 @@ const User = require('../../Structures/Models/User');
 const Rank = require('../../Structures/Models/Rank');
 const { Types } = require('mongoose');
 const axios = require('axios').default;
+const Blacklist = require('../../Structures/Models/Blacklist');
 
 module.exports = class extends Command {
     constructor(...args) {
@@ -12,7 +13,7 @@ module.exports = class extends Command {
             aliases: ['v', 'ver'],
             description: 'Verify a user\'s Roblox account with Paragon Anima',
             category: 'Group',
-            usage: 'verify'
+            usage: 'verify <username>'
         });
     }
 
@@ -34,40 +35,53 @@ module.exports = class extends Command {
         const tRaw = await axios.get(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.Id}&size=180x180&format=Png&isCircular=true`);
         const thumbnail = tRaw.data.data[0].imageUrl;
 
-        Verification.findOne({ discordId: message.author.id }, (error, result) => {
-            if (result) return message.channel.send(`You've already begun a verification session.`);
-
-            User.findOne({ discordId: message.author.id }, async (error, result) => {
-                if (result) return message.channel.send(`You already have a verified Roblox account: ${userRecord.username}`);
-
-                const rank = await Rank.findOne({ name: group.Role });
-                let type = rank.get('type');
-                let minimumPoints = rank.get('minimumPoints');
-
-                const newUser = new Verification({
-                    _id: new Types.ObjectId(),
-                    channelId: message.channel.id,
-                    discordId: message.author.id,
-                    username: user.Username,
-                    robloxId: user.Id,
-                    rankType: type,
-                    rank: group.Role,
-                    points: minimumPoints
+        Blacklist.findOne({ robloxId: user.Id }, (error, result) => {
+            if (result) {
+                message.member.ban({ reason: 'User is blacklisted.' });
+                Blacklist.findOneAndUpdate({ robloxId: user.Id }, { discordId: message.member.id }, (error, update) => {
+                    console.log('User updated for blacklist');
                 });
 
-                newUser.save().catch(error => {
-                    throw new Error(`An error occurred when creating a new user.`);
+                return message.channel.send(`User ${user.Username} banned - on blacklist.`);
+            }
+
+            if (error) return console.log(error);
+
+            Verification.findOne({ discordId: message.author.id }, (error, result) => {
+                if (result) return message.channel.send(`You've already begun a verification session.`);
+    
+                User.findOne({ discordId: message.author.id }, async (error, result) => {
+                    if (result) return message.channel.send(`You already have a verified Roblox account: ${userRecord.username}`);
+    
+                    const rank = await Rank.findOne({ name: group.Role });
+                    let type = rank.get('type');
+                    let minimumPoints = rank.get('minimumPoints');
+    
+                    const newUser = new Verification({
+                        _id: new Types.ObjectId(),
+                        channelId: message.channel.id,
+                        discordId: message.author.id,
+                        username: user.Username,
+                        robloxId: user.Id,
+                        rankType: type,
+                        rank: group.Role,
+                        points: minimumPoints
+                    });
+    
+                    newUser.save().catch(error => {
+                        throw new Error(`An error occurred when creating a new user.`);
+                    });
+            
+                    const embed = new MessageEmbed()
+                        .setColor('#87f04a')
+                        .setThumbnail(thumbnail)
+                        .addField('Username', user.Username, true)
+                        .addField('Roblox ID', user.Id, true)
+                        .addField('Group Rank', group.Role)
+                        .addField('Instructions', `Hello, ${user.Username}!\n\nIn order to verify, you must join [this](https://roblox.com/) game. Once in, click the button and your account will automatically be verified.`);
+            
+                    message.channel.send(embed);
                 });
-        
-                const embed = new MessageEmbed()
-                    .setColor('#87f04a')
-                    .setThumbnail(thumbnail)
-                    .addField('Username', user.Username, true)
-                    .addField('Roblox ID', user.Id, true)
-                    .addField('Group Rank', group.Role)
-                    .addField('Instructions', `Hello, ${user.Username}!\n\nIn order to verify, you must join [this](https://roblox.com/) game. Once in, click the button and your account will automatically be verified.`);
-        
-                message.channel.send(embed);
             });
         });
     }

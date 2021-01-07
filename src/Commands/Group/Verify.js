@@ -78,7 +78,7 @@ module.exports = class extends Command {
                         .addField('Username', user.Username, true)
                         .addField('Roblox ID', user.Id, true)
                         .addField('Group Rank', group.Role)
-                        .addField('Instructions', `Hello, ${user.Username}!\n\nIn order to verify, you must join [this](https://roblox.com/) game. Once in, click the button and your account will automatically be verified.`);
+                        .addField('Instructions', `Hello, ${user.Username}!\n\nIn order to verify, you must join [this](https://www.roblox.com/games/5474678657/Anima-Verification) game. Once in, click the button and your account will automatically be verified.`);
             
                     message.channel.send(embed);
                 });

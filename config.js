@@ -1,8 +1,13 @@
-require('dotenv').config();
+let path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname + '/.env') });
 
 module.exports = {
-    prefix: "!",
-    token: process.env.DISCORD_TOKEN,
+    prefix: process.env.NODE_ENV === 'production'
+                ? process.env.PREFIX
+                : process.env.DEV_PREFIX,
+    token: process.env.NODE_ENV === 'production'
+                ? process.env.DISCORD_TOKEN
+                : process.env.DEV_TOKEN,
     database: {
         username: process.env.DB_USER,
         password: process.env.DB_PASS,

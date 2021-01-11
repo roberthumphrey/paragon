@@ -3,6 +3,7 @@ const User = require('../../Structures/Models/User');
 const Rank = require('../../Structures/Models/Rank');
 const { MessageAttachment } = require('discord.js');
 const { owners } = require('../../../config');
+
 const fs = require('fs');
 
 module.exports = class extends Command {
@@ -16,13 +17,41 @@ module.exports = class extends Command {
     }
 
     async run(message, args) {
-        let user = message.mentions.users.first();
+        let date = new Date(), formatted = date.toISOString().replace(/T/, '_').replace(/\..+/, '');
+        let user = message.mentions.users.first(), userData, username, discordId, rank, rankType, userMarks;
+        let rankData, nextRank, rankMarks;
 
-        if (message.author.id !== owners[0]) return message.channel.send('This command is disabled for development.');
+        if (!user) {
+            userData = await User.findOne({ discordId: message.author.id });
+            if (userData === null) return message.channel.send(`You're not verified.`);
 
-        let pro = await this.client.utils.profile('', '', 0, 0, '', '');
+            username = userData.get('username');
+            discordId = userData.get('discordId');
+            rank = userData.get('rank');
+            rankType = userData.get('rankType');
+            userMarks = userData.get('points');
+
+            rankData = await Rank.findOne({ name: rank });
+            nextRank = rankData.get('next_name');
+            rankMarks = rankData.get('next');
+        } else {
+            userData = await User.findOne({ discordId: user.id });
+            if (userData === null) return message.channel.send(`The selected user is not verified.`);
+
+            username = userData.get('username');
+            discordId = userData.get('discordId');
+            rank = userData.get('rank');
+            rankType = userData.get('rankType');
+            userMarks = userData.get('userMarks');
+
+            rankData = await Rank.findOne({ name: rank });
+            nextRank = rankData.get('next_name');
+            rankMarks = rankData.get('next');
+        }
+
+        let pro = await this.client.utils.profile(username, rank, userMarks, rankMarks, nextRank, discordId, rankType);
         
-        let card = new MessageAttachment(pro, `USERNAME_Card_DATETIME.png`);
+        let card = new MessageAttachment(pro, `${username}_Card_${formatted}.png`);
 
         message.channel.send(card);
     }

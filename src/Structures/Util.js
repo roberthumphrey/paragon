@@ -48,7 +48,7 @@ module.exports = class Util {
         return string.split(' ').map(str => str.slice(0, 1).toUpperCase() + str.slice(1)).join(' ');
     }
 
-    async profile(username, rank, userMarks, rankMarks, nextRank, discordId) {
+    async profile(username, rank, userMarks, rankMarks, nextRank, discordId, rankType) {
         let canvas = createCanvas(700, 500)
         let ctx = canvas.getContext('2d');
 
@@ -80,7 +80,7 @@ module.exports = class Util {
         ctx.fillStyle = '#646464';
         ctx.font = 'bold 15px arial';
         ctx.fillText(`${userMarks} Marks`, 92, 240);
-        ctx.fillText(`${rankMarks - userMarks} Marks until ${nextRank}`, 92, 257);
+        ctx.fillText(`${userMarks >= 12000 ? 'At max obtainable rank' : `${rankMarks - userMarks} Marks until ${nextRank}`}`, 92, 257);
         ctx.stroke();
 
         ctx.fillStyle = '#646464';
@@ -140,7 +140,7 @@ module.exports = class Util {
         ctx.fillStyle = '#646464';
         ctx.font = 'bold 15px arial';
         ctx.fillText(rank, 412, 240);
-        ctx.fillText('Middle Rank', 412, 257);
+        ctx.fillText(`${rankType} Rank`, 412, 257);
         ctx.stroke();
 
         ctx.fillStyle = '#646464';

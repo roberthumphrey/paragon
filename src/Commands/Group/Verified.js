@@ -8,7 +8,7 @@ module.exports = class extends Command {
         super(...args, {
             aliases: ['veru', 'users'],
             description: 'Get a list of all unverified users in the server',
-            category: 'Groups'
+            category: 'Group'
         });
     }
 

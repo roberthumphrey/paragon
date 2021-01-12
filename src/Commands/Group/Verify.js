@@ -26,11 +26,8 @@ module.exports = class extends Command {
 
         if (!user.Username) return message.channel.send(`${username} is an invalid Roblox username.`);
 
-        const gRaw = await axios.get(`http://api.roblox.com/users/${user.Id}/groups`);
-        const groups = gRaw.data;
-        const group = groups.filter(g => g.Id === 1025605)[0];
-
-        if (!group) return message.channel.send(`User ${user.Username} is not in Chain of Paragons.`);
+        const accept = this.client.utils.accept(user.Id);
+        if (!accept) return message.channel.send(`You're not in the group or pending, please pend and then rerun the verify command.\nChain of Paragons: https://www.roblox.com/groups/1025605/Chain-of-Paragons#!/about`)
 
         const tRaw = await axios.get(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.Id}&size=180x180&format=Png&isCircular=true`);
         const thumbnail = tRaw.data.data[0].imageUrl;

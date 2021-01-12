@@ -3,7 +3,9 @@ const { promisify } = require('util');
 const glob = promisify(require('glob'));
 const Command = require('./Command.js');
 const Event = require('./Event');
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas } = require('canvas');
+const axios = require('axios').default;
+const { api: { uri, key } } = require('../../config.js');
 
 module.exports = class Util {
     constructor(client) {
@@ -200,6 +202,30 @@ module.exports = class Util {
         const buffer = canvas.toBuffer();
 
         return buffer;
+    }
+
+    async accept(userId) {
+        const call = await axios({ 
+            method: 'POST',
+            url: `https://${uri}/users/check`,
+            headers: {
+                Authorization: key
+            },
+            data: {
+                id: userId
+            }
+        });
+
+        const response = call.data;
+
+        switch(response.code) {
+            case 1:
+                return true;
+            case 2:
+                return true;
+            case 3:
+                return false;
+        }
     }
 
     async loadCommands() {

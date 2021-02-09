@@ -220,29 +220,12 @@ module.exports = class Util {
 
         switch(response.code) {
             case 1:
-                return true;
+                return { in: true, role: response.role };
             case 2:
-                return true;
+                return { in: true, role: response.role };
             case 3:
                 return false;
         }
-    }
-
-    async checkGroup(id) {
-        let groups = [];
-        const gRaw = await axios.get(`https://groups.roblox.com/v1/users/${id}/groups/roles`);
-        const parsed = gRaw.data.data;
-        
-        parsed.map(group => {
-            let info = { id: group.group.id, role: group.role };
-
-            groups.push(info);
-        });
-
-        let group = groups.filter(gr => gr.id === 1025605);
-
-        if (group.length > 0) return { role: group[0].role.name };
-        else return false;
     }
 
     async loadCommands() {

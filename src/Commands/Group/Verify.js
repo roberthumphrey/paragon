@@ -26,11 +26,8 @@ module.exports = class extends Command {
 
         if (!user.Username) return message.channel.send(`${username} is an invalid Roblox username.`);
 
-        const accept = this.client.utils.accept(user.Id);
-        if (!accept) return message.channel.send(`You're not in the group or pending, please pend and then rerun the verify command.\nChain of Paragons: https://www.roblox.com/groups/1025605/Chain-of-Paragons#!/about`)
-
-        const group = await this.client.utils.checkGroup(user.Id);
-        if (!group) return message.channel.send(`You're not in the group or pending.`);
+        const accept = await this.client.utils.accept(user.Id);
+        if (!accept.in) return message.channel.send(`You're not in the group or pending, please pend and then rerun the verify command.\nChain of Paragons: https://www.roblox.com/groups/1025605/Chain-of-Paragons#!/about`)
 
         const tRaw = await axios.get(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.Id}&size=180x180&format=Png&isCircular=true`);
         const thumbnail = tRaw.data.data[0].imageUrl;
@@ -48,12 +45,13 @@ module.exports = class extends Command {
             if (error) return console.log(error);
 
             Verification.findOne({ discordId: message.author.id }, (error, result) => {
+                console.log(accept);
                 if (result) return message.channel.send(`You've already begun a verification session.`);
     
                 User.findOne({ discordId: message.author.id }, async (error, result) => {
                     if (result) return message.channel.send(`You already have a verified Roblox account: ${userRecord.username}`);
     
-                    const rank = await Rank.findOne({ name: group.role });
+                    const rank = await Rank.findOne({ name: accept.role });
                     let type = rank.get('type');
                     let minimumPoints = rank.get('minimumPoints');
     
@@ -64,7 +62,7 @@ module.exports = class extends Command {
                         username: user.Username,
                         robloxId: user.Id,
                         rankType: type,
-                        rank: group.role,
+                        rank: accept.role,
                         points: minimumPoints
                     });
     
@@ -77,7 +75,7 @@ module.exports = class extends Command {
                         .setThumbnail(thumbnail)
                         .addField('Username', user.Username, true)
                         .addField('Roblox ID', user.Id, true)
-                        .addField('Group Rank', group.role)
+                        .addField('Group Rank', accept.role)
                         .addField('Instructions', `Hello, ${user.Username}!\n\nIn order to verify, you must join [this](https://www.roblox.com/games/5474678657/Anima-Verification) game. Once in, click the button and your account will automatically be verified.`);
             
                     message.channel.send(embed);

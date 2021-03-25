@@ -21,7 +21,7 @@
     "hastebin": "^0.2.1",
     "join": "^3.0.0",
     "moment": "^2.29.0",
-    "mongoose": "^5.10.11",
+    "mongoose": "^5.12.2",
     "ms": "^2.1.2",
     "node-fetch": "^2.6.1",
     "node-http-ping": "^0.3.1",

@@ -12,7 +12,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.3",
     "canvas": "^2.6.1",
     "diff": "^4.0.2",
     "discord.js": "^12.4.0",
